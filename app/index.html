@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Firebase Demo</title>
+    <link rel="stylesheet"  href="lib/bower_components/OnsenUI/css/onsen-css-components.css" sty>
+    <link rel="stylesheet"  href="lib/bower_components/OnsenUI/css/onsenui.css">
+    <link rel="stylesheet"  href="css/app.css" sty>
+
+    <script src="./lib/bower_components/angular/angular.js" type="application/javascript"></script>
+    <script src="./lib/bower_components/OnsenUI/js/onsenui.min.js" type="application/javascript"></script>
+
+    <!--NOTICE FIREBASE LINKS HERE-->
+    <script src="./lib/bower_components/firebase/firebase-app.js" type="application/javascript"></script>
+    <script src="./lib/bower_components/firebase/firebase-database.js" type="application/javascript"></script>
+
+</head>
+<body ng-app="firebase-example-app">
+    <ons-navigator var="navi" page="./views/list.html"></ons-navigator>
+
+
+    <!--Config app-->
+    <script src="js/app.js" type="application/javascript"></script>
+    <!--Controllers-->
+    <script src="js/controller/listController.js" type="application/javascript"></script>
+    <!--Directives-->
+    <script src="js/directives/enterKeyDIrective.js" type="application/javascript"></script>
+
+</body>
+</html>

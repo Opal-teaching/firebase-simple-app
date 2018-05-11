@@ -1,0 +1,65 @@
+<ons-page ng-controller="ListController as vm">
+    <ons-toolbar>
+        <div class="center">Simple Firebase</div>
+    </ons-toolbar>
+    <div style="text-align: center">
+        <ons-row style="padding:10px">
+            <ons-col>
+                <!--TODO: Implement vm.clear()-->
+                <ons-button modifier="cta" ng-click="vm.clearMessages()" ng-disabled="vm.disableButtons">
+                    Clear
+                </ons-button>
+            </ons-col>
+            <ons-col>
+                <!--TODO: Implement vm.pushPost()-->
+                <ons-button modifier="cta" ng-click="vm.pushPost()" ng-disabled="vm.disableButtons
+                    || vm.messageContent === ''">
+                    Push
+                </ons-button>
+            </ons-col>
+        </ons-row>
+        <ul class="list">
+            <li class="list__item">
+                <div class="list__item__center">
+                    <input style="width:100%" class="textarea textarea--transparent" key-enter="vm.pushPost()" placeholder="Text message" ng-model="vm.messageContent">
+                </div>
+            </li>
+        </ul>
+        <div ng-show="vm.loading">
+            <svg class="progress-circular">
+                <circle class="progress-circular__primary" cx="50%" cy="50%" r="40%" fill="none" stroke-width="10%" stroke-miterlimit="10"/>
+            </svg>
+        </div>
+        <div ng-show="!vm.loading">
+            <div style="text-align:center;color:slategrey" ng-show="vm.messages.length == 0">
+                <p> No Messages!</p>
+            </div>
+        <!--TODO: Use the length property from vm.messages to display or hide the "No message"-->
+        <div >
+            <li class="list__header">
+                Messages
+            </li>
+            <!--TODO: Use a filter to order messages by their time, display messages that were pushed last first use orderBy-->
+            <ul class="list list--material" ng-repeat="message in vm.messages">
+                <li class="list__item list__item--material">
+                    <div class="list__item__center list__item--material__center">
+                        <div class="list__item__title list__item--material__title">
+                            <!--TODO Implement your custom filter handleLongText, which will cut the length of the message-->
+                            <!--{{message.content | handleLongText : 20 }}-->
+                            {{message.content }}
+
+                        </div>
+                        <div class="list__item__subtitle list__item--material__subtitle">
+                            <!--TODO: Use the AngularJS date filter and use the format 'MMM d, y h:mm:ss a' for the message.time-->
+                            {{message.time}}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        </div>
+
+
+    </div>
+</ons-page>
