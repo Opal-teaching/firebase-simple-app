@@ -47,18 +47,16 @@
 			// Use vm.loading in the callback to stop showing the loading
 			// Remember to use $timeout(function(){}) in
 		    // the callback otherwise AngularJS won't be notified of your changes.
-console.log("Initializing");
-console.log(refMessages);
+
             refMessages.once("value",
 				// Success
 				function(snap){
             		$timeout(function() {
-console.log("Inside once for refMessages");
-console.log(snap);
-console.log(snap.exists());
+
             			// There are messages
             			if(snap.exists()){
-							vm.messages = Object.values(snap);
+
+							vm.messages = Object.values(snap.val());
 							messageCounter = vm.messages.length;
 							vm.loading = false;
 						}
@@ -71,22 +69,27 @@ console.log(snap.exists());
 				},
 				// Error
 				function (error) {
-            		// User gets an alert to try loading again
-                    ons.notification.alert({message:"Failed to retrieve data from server",
-											buttonLabels:["Try again"],
-											title:"Error",
-                    						callback:initController()}
-                    );
-                }
+                    $timeout(function() {
+						console.log(error);
+						// User gets an alert to try loading again
+						ons.notification.alert({message:"Failed to retrieve data from server",
+												buttonLabels:["Try again"],
+												title:"Error",
+												callback:initController()}
+						);
+                	})
+				}
 			);
 
 			// 2. TODO: Add a firebase 'on' event of type "child_added", and listen to changes in messages.
 			// Upon arrival of a message, add it to the vm.messages array.
 
 			refMessages.on("child_added", function(snap){
-				if(snap.exists()){
-					vm.messages.push(snap);
-				}
+                $timeout(function() {
+                    if (snap.exists()) {
+                        vm.messages.push(snap.val());
+                    }
+                })
 			});
 
 		}
@@ -107,18 +110,31 @@ console.log(snap.exists());
 				vm.disableButtons = true;
 				/** Enter code here */
 				var newMessageRef = refMessages.push({
-					content:messageContent,
-					time:firebase.database.ServerValue.TIMESTAMP,
-					id:messageCounter
+                    content: vm.messageContent,
+                    time: firebase.database.ServerValue.TIMESTAMP,
+                    id: messageCounter
 
+                }).then(function(snap) {
+                    $timeout(function() {
+                        // Upon success, increment the messageCounter, re-enable the buttons and empty the messageContent
+                        messageCounter++;
+                        vm.disableButtons = false;
+                        vm.messageContent = "";
+                    })
 				}).catch(function(error) {
-                    // User gets an alert that the message failed to send
-                    ons.notification.alert({message:"Send message failed.",
-											title:"Error"}
-					);
+                    $timeout(function() {
+
+                        console.log(error);
+                        vm.disableButtons = false;
+                        // User gets an alert that the message failed to send
+                        ons.notification.alert({
+                                message: "Send message failed.",
+                                title: "Error"
+                            }
+                        );
+                    })
                 });
 			}
-			vm.messageContent = "";
 		}
 		 /**
 		 * @ngdoc method
@@ -130,15 +146,28 @@ console.log(snap.exists());
 			// 4. TODO: Clear posts, use ref.set, if the call fails, catch the promise if failed and display an onsen alert
 
 			ref.set(null).then(function(snap){
+                $timeout(function() {
 
-				// Upon successful Firebase clearing, clear the local messages too
-                vm.messages = [];
+                    // Upon successful Firebase clearing, clear the local messages too
+                    vm.messages = [];
+                    messageCounter = 0;
+
+                    // Refresh the page
+                    vm.messageContent = "";
+                    vm.disableButtons = false;
+                })
 
 			}).catch(function(error){
-				// User gets an alert that clearing the messages failed
-                ons.notification.alert({message:"Clear messages failed.",
-										title:"Error"}
-				);
+                $timeout(function() {
+
+                    console.log(error);
+                    // User gets an alert that clearing the messages failed
+                    ons.notification.alert({
+                            message: "Clear messages failed.",
+                            title: "Error"
+                        }
+                    );
+                })
 			});
 		}
 
