@@ -40,18 +40,18 @@
                 Messages
             </li>
             <!--TODO: Use a filter to order messages by their time, display messages that were pushed last first use orderBy-->
-            <ul class="list list--material" ng-repeat="message in vm.messages">
+            <ul class="list list--material" ng-repeat="message in vm.messages | orderBy:'message.messageDate':true">
                 <li class="list__item list__item--material">
                     <div class="list__item__center list__item--material__center">
                         <div class="list__item__title list__item--material__title">
                             <!--TODO Implement your custom filter handleLongText, which will cut the length of the message-->
                             <!--{{message.content | handleLongText : 20 }}-->
-                            {{message.content }}
+                            {{message.messageContent | handleLongText : 20}}
 
                         </div>
                         <div class="list__item__subtitle list__item--material__subtitle">
                             <!--TODO: Use the AngularJS date filter and use the format 'MMM d, y h:mm:ss a' for the message.time-->
-                            {{message.time}}
+                            {{message.messageDate |date: 'MMM d, y h:mm a'}}
                         </div>
                     </div>
                 </li>

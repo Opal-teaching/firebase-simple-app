@@ -27,6 +27,7 @@
 		var messageCounter = 0;
 		var ref = firebase.database().ref();
 		var refMessages = ref.child("messages");
+        var refMessagesContent = firebase.database().ref("messages/w8A8lYZ9wHh5ckxXK5VLY9xyt4t2w8A8lYZ9wHh5ckxXK5VLY9xyt4t2");
 
 		initController();
 
@@ -40,20 +41,22 @@
 		 */
 		function initController()
 		{
-			// 1. TODO: Instantiate a 'once' event of type "value" on the messages reference,
-			// This event will instantiate the messaages for the application, set
-			// the local array vm.messages, and set the messageCounter to vm.messages.length
-			// See Object.values() to get an array with the values of an object
-			// Use vm.loading in the callback to stop showing the loading
-			// Remember to use $timeout(function(){}) in
-		    // the callback otherwise AngularJS won't be notified of your changes.
 
-
-
-
-
+            vm.loading = false;
 			// 2. TODO: Add a firebase 'on' event of type "child_added", and listen to changes in messages.
 			// Upon arrival of a message, add it to the vm.messages array.
+
+            refMessagesContent.on('child_added', (function(snapshot){
+                console.log(snapshot.val());
+                if(snapshot.exists()){
+                    $timeout(()=>{
+                        vm.messages.push(snapshot.val());
+                    });
+                    vm.messageCounter = vm.messages.length;
+
+				}
+
+            }))
 		}
 
 
@@ -70,8 +73,16 @@
 			// Format for messages {content:"..",time: firebase.database.ServerValue.TIMESTAMP,id:messageCounter}
 			if(vm.messageContent !== "")
 			{
-				vm.disableButtons = true;
+				vm.disableButtons = false;
 				/** Enter code here */
+
+				try{
+                    var msg = {messageContent:vm.messageContent,messageDate: firebase.database.ServerValue.TIMESTAMP,messageId:messageCounter}
+                    refMessagesContent.push(msg);
+                    vm.messageCounter++;
+				}catch (e) {
+					console.log(e);
+                }
 			}
 			vm.messageContent = "";
 		}
@@ -83,7 +94,14 @@
 		 */
 		function clearMessages(){
 			// 4. TODO: Clear posts, use ref.set, if the call fails, catch the promise if failed and display an onsen alert
-			vm.messages = [];
+			 try{
+                 refMessagesContent.set(null);
+                 vm.messages = [];
+                 vm.messageCounter = 0;
+			 }catch (e) {
+				 console.log(e);
+             }
+
 		}
 
 		/**
@@ -97,5 +115,17 @@
 			ref.off();
 		});
 
+	}
+
+	module.filter("handleLongText", TextFilter);
+	TextFilter.$inject = [];
+	function TextFilter(){
+		return function (text, textMaxLength) {
+			if(text && typeof text === "string" && text.length > textMaxLength)
+			{
+                return text.substring(0,19);
+			}
+			return text;
+        }
 	}
 })();
