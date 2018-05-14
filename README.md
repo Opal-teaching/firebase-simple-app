@@ -222,7 +222,7 @@ Some examples of events. Consider the following subtree:
 {
    "0":{
         "firstname":"David"
-        "conversations:{
+        "conversations":{
             "0":true,
             "1":true,
         }
@@ -234,7 +234,7 @@ ref.on("value",(snap)=>{
 });
 // Prints 0, {
                      "firstname":"David"
-                     "conversations:{
+                     "conversations":{
                          "0":true,
                          "1":true,
                      }
@@ -262,7 +262,7 @@ be to have,
                 "userId":"0"
                 "firstname": "David",
                 "lastname": "Herrera",
-                "conversations:{
+                "conversations":{
                     "0":{
                         "convId":"0"
                         "lastMessage":{}
@@ -287,8 +287,8 @@ to update however many references with the same information, one for each
 user of the conversation.
 A second argument against such a structuring (as if the above one wasn't enough)
 is that any time we want to check a user's information, we are downloading
-the entire subtree, even if we are not interested in knowing the
-conversations for the user.
+the entire subtree, even if we are just interested in the
+ user's profile and not all their conversations.
 
 Firebase, instead, favors a more "flatten" database structure, whereby, we keep
 indices around in certain sub-trees depending on how we navigate
@@ -296,10 +296,57 @@ through subtrees in our application. In this
 case, we have two modules, users and conversations. In this two-way relationship
 the only source of redundancy in terms of space is the fact that
 a conversation keeps a list of its members, and a given member keeps track
-of conversations. In this case, this redundancy is necessary,
- as sometimes we need conversations based on a user, and sometimes we need
- to know which users take part of a conversation.
+of their conversations. In this case, this redundancy is necessary,
+as sometimes we need conversations based on a user, and sometimes we need
+to know which users that take part of a conversation.
 
+Note that this, however, also have its downsides, for instance.
+ Coming back to our schema, we have:
+ ```
+ "users":{
+    "0":{
+         "firstname":"David",
+         "lastname":"Herrera",
+         "conversations":{
+             "0":true,
+             "1":true,
+         }
+     }
+ },
+ "conversations":{
+    "0":{
+        ...
+    },
+    "1":{
+            ...
+    }
+
+ }
+ ```
+ Where we have a user whose conversation child holds all the keys
+ for the user conversations.
+Given user, how can we grab all their actual conversations based on just
+the conversation keys? How can we listen to changes in each of those
+conversations?
+
+Firebase, unfortunately, does not offer such a string querying
+capability. Their querying capabilities are specific to a given
+reference subtree. In this case. We run into the problem
+of either tracking,  extracting, and listening
+ to all the conversations, irrespective if they are actual user
+conversations, or creating  a reference to each
+conversation and instantiating listeners for each. The latter is
+preferable over the former, as it scales better. The
+only worry then becomes clearing all those listeners upon
+exit, which is why we have:
+ ```
+    $scope.$on("$destroy",()=>{
+        ref.off()
+    });
+
+```
+If we were to forget this step, we would leak listeners. This is
+because event listeners are not destroyed unless you specifically destroy them.
 
 ## Instructions
 1. Clone this repository
@@ -348,7 +395,7 @@ of conversations. In this case, this redundancy is necessary,
     behaviour is up to you.
 
 # Notes
-- In your firebase callbacks remeber to call `$timeout`
+- In your firebase callbacks remember to call `$timeout`
 in order to refresh the AngularJS view.
    - Why do we need this? You can try it with/without
       and ask yourself why. I will ask you this later.
