@@ -48,14 +48,43 @@
 			// Remember to use $timeout(function(){}) in
 		    // the callback otherwise AngularJS won't be notified of your changes.
 
+            refMessages.once("value",
+				// Success
+				function(snap){
+            		$timeout(function() {
 
+            			// There are messages
+            			if(snap.exists()){
+							vm.messages = Object.values(snap);
+							messageCounter = vm.messages.length;
+							vm.loading = false;
+						}
+						// There are no messages
+						else{}
 
-
+					});
+				},
+				// Error
+				function (error) {
+            		// User gets an alert to try loading again
+                    ons.notification.alert({message:"Failed to retrieve data from server",
+											buttonLabels:["Try again"],
+											title:"Error",
+                    						callback:initController()}
+                    );
+                }
+			);
 
 			// 2. TODO: Add a firebase 'on' event of type "child_added", and listen to changes in messages.
 			// Upon arrival of a message, add it to the vm.messages array.
-		}
 
+			refMessages.on("child_added", function(snap){
+				if(snap.exists()){
+					vm.messages.push(snap);
+				}
+			});
+
+		}
 
 		/**
 		 * @ngdoc method
@@ -68,10 +97,21 @@
 			// Use counter to create message and increment  messageCounter if the message is successfully sent.
 			// (i.e. then clause of ref.push)
 			// Format for messages {content:"..",time: firebase.database.ServerValue.TIMESTAMP,id:messageCounter}
-			if(vm.messageContent !== "")
-			{
+			if(vm.messageContent !== ""){
+
 				vm.disableButtons = true;
 				/** Enter code here */
+				var newMessageRef = refMessages.push({
+					content:messageContent,
+					time:firebase.database.ServerValue.TIMESTAMP,
+					id:messageCounter
+
+				}).catch(function(error) {
+                    // User gets an alert that the message failed to send
+                    ons.notification.alert({message:"Send message failed.",
+											title:"Error"}
+					);
+                });
 			}
 			vm.messageContent = "";
 		}
@@ -83,7 +123,18 @@
 		 */
 		function clearMessages(){
 			// 4. TODO: Clear posts, use ref.set, if the call fails, catch the promise if failed and display an onsen alert
-			vm.messages = [];
+
+			ref.set(null).then(function(snap){
+
+				// Upon successful Firebase clearing, clear the local messages too
+                vm.messages = [];
+
+			}).catch(function(error){
+				// User gets an alert that clearing the messages failed
+                ons.notification.alert({message:"Clear messages failed.",
+										title:"Error"}
+				);
+			});
 		}
 
 		/**
