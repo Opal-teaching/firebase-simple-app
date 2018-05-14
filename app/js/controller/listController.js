@@ -47,12 +47,15 @@
 			// Use vm.loading in the callback to stop showing the loading
 			// Remember to use $timeout(function(){}) in
 		    // the callback otherwise AngularJS won't be notified of your changes.
-
+console.log("Initializing");
+console.log(refMessages);
             refMessages.once("value",
 				// Success
 				function(snap){
             		$timeout(function() {
-
+console.log("Inside once for refMessages");
+console.log(snap);
+console.log(snap.exists());
             			// There are messages
             			if(snap.exists()){
 							vm.messages = Object.values(snap);
@@ -60,7 +63,9 @@
 							vm.loading = false;
 						}
 						// There are no messages
-						else{}
+						else{
+            				vm.loading = false;
+						}
 
 					});
 				},
