@@ -35,7 +35,7 @@
                 <p> No Messages!</p>
             </div>
         <!--TODO: Use the length property from vm.messages to display or hide the "No message"-->
-        <div >
+        <div ng-show="vm.messages.length != 0">
             <li class="list__header">
                 Messages
             </li>
