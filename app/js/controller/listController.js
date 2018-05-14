@@ -41,7 +41,7 @@
 		function initController()
 		{
 			// 1. TODO: Instantiate a 'once' event of type "value" on the messages reference,
-			// This event will instantiate the messaages for the application, set
+			// This event will instantiate the messages for the application, set
 			// the local array vm.messages, and set the messageCounter to vm.messages.length
 			// See Object.values() to get an array with the values of an object
 			// Use vm.loading in the callback to stop showing the loading
