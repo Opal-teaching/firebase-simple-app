@@ -3,10 +3,11 @@
 	/**
 	 * @ngdoc controller
 	 * @name firebase-example-app.controller:ListController
-	 * @description Controls the message list and communicates with Firebase
+	 * @description
 	 * @requires $scope
 	 * @requires $timeout
-	 * @description Manages ./views/list.html
+	 * @description Controls the message list and communicates with Firebase.<br>
+	 * 				Manages ./views/list.html
 	 */
 	module.controller("ListController",ListController);
 	ListController.$inject = ["$scope","$timeout"];

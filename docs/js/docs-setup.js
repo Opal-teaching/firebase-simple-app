@@ -18,8 +18,17 @@ NG_DOCS={
       "shortName": "ListController",
       "type": "controller",
       "moduleName": "firebase-example-app",
-      "shortDescription": "Manages ./views/list.html",
+      "shortDescription": "Controls the message list and communicates with Firebase.",
       "keywords": "$scope $timeout api changes child_added clearmessages clears communicates controller controls event events firebase firebase-example-app html initcontroller instantiates list listcontroller listen manages message messages method pushes pushpost sets vm"
+    },
+    {
+      "section": "api",
+      "id": "firebase-example-app.filter:handleLongText",
+      "shortName": "handleLongText",
+      "type": "filter",
+      "moduleName": "firebase-example-app",
+      "shortDescription": "Formats text to add line breaks every lineLength number of characters.",
+      "keywords": "add api breaks characters filter firebase-example-app format formats formatted handlelongtext input linelength number string text"
     }
   ],
   "apis": {
