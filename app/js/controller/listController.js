@@ -1,5 +1,36 @@
 (function(){
 	var module = angular.module("firebase-example-app");
+
+    module.filter("handleLongText", HandleLongText);
+    HandleLongText.$inject = [];
+
+    /**
+     * @ngdoc filter
+     * @name firebase-example-app.filter:handleLongText
+     * @param {string} text Text to be processed
+     * @param {string|number} maxLength Maximum length accepted for a text
+     * @description if the text is longer than maxLength then it is cut off
+     * @returns {Function}
+     * @constructor
+     */
+    function HandleLongText()
+    {
+        HandleLongText.$stateful = true;
+
+        return function(text, maxLength)
+        {
+            maxLength = Number(maxLength);
+            if(typeof text !== 'string' || isNaN(maxLength) || text.length < maxLength)
+            {
+                return text;
+            }
+            if (text.length > maxLength)
+            {
+                return text.substring(0, maxLength);
+            }
+        }
+    }
+
 	/**
 	 * @ngdoc controller
 	 * @name firebase-example-app.controller:ListController
@@ -21,7 +52,7 @@
 		vm.loading = true;
 		// Scope Functions
 		vm.clearMessages = clearMessages;
-		vm.pushPost= pushPost;
+		vm.pushPost = pushPost;
 
 		// local variables
 		var messageCounter = 0;
@@ -41,21 +72,32 @@
 		function initController()
 		{
 			// 1. TODO: Instantiate a 'once' event of type "value" on the messages reference,
-			// This event will instantiate the messaages for the application, set
+			// This event will instantiate the messages for the application, set
 			// the local array vm.messages, and set the messageCounter to vm.messages.length
 			// See Object.values() to get an array with the values of an object
 			// Use vm.loading in the callback to stop showing the loading
 			// Remember to use $timeout(function(){}) in
 		    // the callback otherwise AngularJS won't be notified of your changes.
 
-
-
-
+			// refMessages.once("value",function(snap){
+			// 	$timeout(function(){
+			// 		vm.messages = Object.values(snap);
+			// 		messageCounter = vm.messages.length;
+			// 		vm.loading = false;
+			// 	});
+			// });
 
 			// 2. TODO: Add a firebase 'on' event of type "child_added", and listen to changes in messages.
 			// Upon arrival of a message, add it to the vm.messages array.
-		}
 
+			refMessages.on("child_added", function(snap){
+				$timeout(function(){
+					vm.messages.push(snap.val());
+                    messageCounter = vm.messages.length;
+					vm.loading = false;
+				});
+			});
+		}
 
 		/**
 		 * @ngdoc method
@@ -72,6 +114,19 @@
 			{
 				vm.disableButtons = true;
 				/** Enter code here */
+				var new_message = {
+					content:vm.messageContent,
+					time:firebase.database.ServerValue.TIMESTAMP,
+					id:messageCounter,
+				};
+
+				refMessages.push(new_message)
+					.then(function(){
+						messageCounter++;
+						vm.disableButtons = false;      // why clear is disabled after sending a message?
+					}).catch(function(err){
+						alert("Error sending message: " + err);
+				});
 			}
 			vm.messageContent = "";
 		}
@@ -84,6 +139,11 @@
 		function clearMessages(){
 			// 4. TODO: Clear posts, use ref.set, if the call fails, catch the promise if failed and display an onsen alert
 			vm.messages = [];
+			refMessages.set(null)
+				.then(()=>{})
+				.catch(function(err){
+					alert("Error clearing messages: " + err);
+				});
 		}
 
 		/**
