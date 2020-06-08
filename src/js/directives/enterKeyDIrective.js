@@ -1,6 +1,11 @@
-(function(){
-	var module = angular.module("firebase-example-app");
-	module.directive('keyEnter', function () {
+(function() {
+	'use strict';
+
+	angular
+		.module("firebase-example-app")
+		.directive('keyEnter', keyEnter);
+
+	function keyEnter() {
 		return function (scope, element, attrs) {
 			element.bind("keydown keypress", function (event) {
 				if(event.which === 13) {
@@ -11,5 +16,5 @@
 				}
 			});
 		};
-	});
+	}
 })();
