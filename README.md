@@ -19,7 +19,7 @@ Please read the resource below before starting.
 ## Mini Firebase Tutorial
 
 Firebase is described as a no-SQL real-time database. Its structure is based on key/value pairs that ressemble JSON syntax, 
-e.g.
+e.g.:
 ```
 {
     "users": {
@@ -40,13 +40,6 @@ e.g.
     }
 }
 ```
-
-Table of Contents:
-- Firebase references
-- Event listeners
-- Ways to write to Firebase
-- Database structuring
-- Database querying
 
 ### Firebase References
 A Firebase database is always accessed via Firebase references. References are 'pointers' to paths in the Firebase sub-tree.
@@ -112,7 +105,7 @@ Let's now write to this reference/sub-tree (assuming that it's the root) using `
  firebase.database().ref().set({"lastname":"Herrera"});
  firebase.database().ref().update({"lastname":"Herrera"});
  
- // Result for set
+// Result for set
 {
     "lastname": "Herrera"
 }
@@ -150,7 +143,7 @@ ref.push({"lastname": "Herrera"})
     }
 }
 ```
-Here the string `"asdjlkA_+asda=asfasdf^&"` is a randomly generated key from Firebase. To obtain this key before or after pushing, 
+Here, the string `asdjlkA_+asda=asfasdf^&` is a randomly generated key from Firebase. To obtain this key before or after pushing, 
 we use:
 ```
 let ref = firebase.database().ref();
@@ -198,7 +191,7 @@ For these two types of listeners, there are five types of events.
 - `child_moved`:   Only detects and fires when a child in the sub-tree is changed and
                    at a basic level it only works with lists, (keys are numbers).
 
-Read more about data retrieval here: [Retrieving Data](https://firebase.google.com/docs/database/admin/retrieve-data).
+You can read more about data retrieval here: [Retrieving Data](https://firebase.google.com/docs/database/admin/retrieve-data).
 
 The general structure for reading is the following:
 ```
@@ -292,7 +285,7 @@ a conversation keeps a list of its members, and a given member keeps track of th
 In this case, this redundancy is necessary, as sometimes we need conversations based on a user, and sometimes we need
 to know which users take part of a conversation.
 
-Note that this structure, however, also hs its downsides.
+Note that this structure, however, also has its downsides.
 For instance, coming back to our schema, we have:
 ```
 {
@@ -348,24 +341,24 @@ You can read more on this topic here:
 
 1. Clone this repository.
 
-2. Run `npm install `.
+2. Run `npm install`.
 
 3. Run `npm run start`.
    <br><br>
    You should get one error in the console: `Can't determine Firebase Database URL.` This is normal.
    
-4. Log in to the [Firebase console](https://console.firebase.google.com/) using your Google account (you'll need to sign up if 
-   you don't have one). Go to [Firebase Setup](https://firebase.google.com/docs/web/setup), and follow steps 1 and 2 
-   (but don't set up Firebase Hosting). Skip the first half of step 3 (Add Firebase SDKs) and go directly to the sub-step 
+4. Log into the [Firebase console](https://console.firebase.google.com/) using your Google account (you'll need to sign up if 
+   you don't have one). Open the following setup guide: [Firebase Setup](https://firebase.google.com/docs/web/setup), and follow 
+   steps 1 and 2 (but don't set up Firebase Hosting). Skip the first half of step 3 and go directly to the sub-step 
    `Firebase config object`. Find and copy the inner values of your Firebase's firebaseConfig object.
 
 5. Open `src/js/app.js` in your cloned project. Paste the firebaseConfig attributes that you copied into the object of the 
    same name. Save the file to force webpack to reload, then check the console in your browser. 
    You shouldn't see any more errors (only warnings).
 
-6. Review the presentation slides on Firebase, and read the Firebase doc linked in the resources above.
+6. Review the presentation slides on Firebase, and read the Firebase doc linked in the Resources section above.
 
-7. Fill out all the TODOs in `listController.js` and `list.html`.
+7. Follow all the TODOs in `listController.js` and `list.html`.
 
 ## Additional Details
 
@@ -376,10 +369,10 @@ You can read more on this topic here:
       as new messages arrive based on a `child_added` event.
     <br><br>
     Pay attention to the behaviour of the second listener. Does it return the initial values 
-    (the same way as the first listener)? If yes, remove the redundant listener. If no, keep both.
+    (the same way as the first listener)? If yes, remove the redundant listener; if not, keep both.
     
-2.  The `pushMessage` method will be in charge of pushing a new message to Firebase using `ref.push` Here is the format
-    for the new message:
+2.  The `pushMessage` method will be in charge of pushing new messages to Firebase using `ref.push` Here is the format
+    for a new message:
     ```
     var new_message = {
         content: "...",
@@ -387,7 +380,7 @@ You can read more on this topic here:
         id: messageCounter
     };
     ```
-    We will keep a messageCounter in the controller to maintain ids for each message.
+    We will keep a messageCounter in the controller to maintain IDs for each message.
 
 3.  The `clearMessage` method will clear the entire message list from Firebase using `.set`.
 
@@ -396,7 +389,7 @@ You can read more on this topic here:
    list of messages. In terms of the message content, you will need to implement a custom filter,
    which could, for example, insert a '\n' after a given number of characters. The behaviour is up to you.
 
-# Notes
+## Notes
 
   - In your Firebase callbacks, use `$timeout` to refresh the AngularJS view.
     Why is this necessary? Try it yourself with and without `$timeout` and compare the behaviour.
@@ -409,5 +402,5 @@ You can read more on this topic here:
     ```
 
   - Remember to always add a success/fail (.then/.catch) clause for each Firebase call you make. 
-    Always add handling in case of failure (show an `ons.notification.alert` for instance), and 
+    Always add handling in case of failure (show an `ons.notification.alert`, for instance), and most importantly,
     __test whether your failure clause works__.
