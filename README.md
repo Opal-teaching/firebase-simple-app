@@ -350,15 +350,27 @@ You can read more on this topic here:
 4. Log into the [Firebase console](https://console.firebase.google.com/) using your Google account (you'll need to sign up if 
    you don't have one). Open the following setup guide: [Firebase Setup](https://firebase.google.com/docs/web/setup), and follow 
    steps 1 and 2 (but don't set up Firebase Hosting). Skip the first half of step 3 and go directly to the sub-step 
-   `Firebase config object`. Find and copy the inner values of your Firebase's firebaseConfig object.
+   `Learn about the Firebase config object`. Find and copy the inner values of your Firebase's firebaseConfig object.
 
 5. Open `src/js/app.js` in your cloned project. Paste the firebaseConfig attributes that you copied into the object of the 
    same name. Save the file to force webpack to reload, then check the console in your browser. 
    You shouldn't see any more errors (only warnings).
+   
+6. In the Firebase console for your project, click on "Realtime Database" in the left windowpane, and follow the instructions to 
+   enable the database. Afterwards, edit the ‘Rules’ tab of the DB to allow unrestricted access, as depicted below 
+   (if you prefer to set stricter rules, refer to the Additional Details section below).
+   ```
+   {
+     "rules": {
+       ".read": true,
+       ".write": true
+     }
+   }
+   ```
 
-6. Review the presentation slides on Firebase, and read the Firebase doc linked in the Resources section above.
+7. Review the presentation slides on Firebase, and read the Firebase doc linked in the Resources section above.
 
-7. Follow all the TODOs in `listController.js` and `list.html`.
+8. Follow all the TODOs in `listController.js` and `list.html`.
 
 ## Additional Details
 
@@ -388,6 +400,39 @@ You can read more on this topic here:
    a "No messages" label, and some filters. In particular, we use filters to display dates, or to format the
    list of messages. In terms of the message content, you will need to implement a custom filter,
    which could, for example, insert a '\n' after a given number of characters. The behaviour is up to you.
+   
+5. If you'd like to experiment with setting stricter Firebase rules, you can do so by modifying them in 
+   your project's Firebase console. Here are some basic examples to try:
+   
+   Allow all authenticated access:
+   ```
+   {
+     "rules": {
+       ".read": "auth != null",
+       ".write": "auth != null"
+     }
+   }
+   ```
+   
+   Allow unrestricted access from now until Oct 31st, 2020:
+   ```
+   {
+     "rules": {
+       ".read": "now < 1604116800000",  // 2020-10-31
+       ".write": "now < 1604116800000",  // 2020-10-31
+     }
+   }
+   ```
+   
+   Instructions on setting more complex rules are available in Firebase's online documentation.
+   
+   Note that setting your Firebase rules incorrectly will result in access errors when trying to read or write to your 
+   database. For example:
+   ```
+   FIREBASE WARNING: set at /messages/-MI_2QHFwFdfNAeZP1O0 failed: permission_denied
+   ```
+   
+   Try setting too-strict rules to see these errors appear when using your app.
 
 ## Notes
 
