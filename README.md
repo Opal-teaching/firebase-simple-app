@@ -1,3 +1,5 @@
+# *** MOVED TO GITLAB ***
+
 # Simple Firebase App
 
 ## Description
